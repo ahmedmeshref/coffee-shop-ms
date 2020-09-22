@@ -1,15 +1,15 @@
 from flask import Flask
 
-from config import config_by_name
+from config import configs
 
 
 def create_app(config_object='development'):
     # create and configure the app
     app = Flask(__name__)
-    # app.config.from_object(config_by_name[config_object])
+    app.config.from_object(configs[config_object])
 
     with app.app_context():
-        setup_db(app)
+        # setup_db(app)
         # import blueprints
 
         return app
