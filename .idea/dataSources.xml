@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="database" uuid="ef600d7b-3dd9-4db8-97aa-6243853b8d5e">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:\coding\web\FullstackUdacity\lesson_3\coffee_shop_full_stack\backend\src\database\database.db</jdbc-url>
+    </data-source>
+  </component>
+</project>
