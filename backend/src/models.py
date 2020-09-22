@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -13,11 +13,12 @@ def setup_db(app):
     """
     db.app = app
     db.init_app(app)
-
-
-def db_drop_and_create_all():
-    db.drop_all()
     db.create_all()
+
+
+# def db_drop_and_create_all():
+#     db.drop_all()
+#     db.create_all()
 
 
 class Drink(db.Model):
