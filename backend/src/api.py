@@ -1,7 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 
-from models import setup_db
+from models import setup_db, db, Drink
 
 app = Flask(__name__)
 setup_db(app)
@@ -23,6 +23,22 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks")
+def get_drinks():
+    error = False
+    try:
+        drinks = [drink.short() for drink in db.session.query(Drink).all()]
+    except:
+        error = True
+    finally:
+        db.session.close()
+    if error:
+        abort(500)
+    else:
+        return jsonify({
+            'success': True,
+            'drinks': drinks
+        })
 
 
 '''
@@ -78,7 +94,7 @@ Example error handling for unprocessable entity
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 422,
                     "message": "unprocessable"
                     }), 422
