@@ -41,17 +41,37 @@ def get_drinks():
         return jsonify({
             'success': True,
             'drinks': drinks
-        })
+        }), 200
 
 
 '''
-@TODO implement endpoint
+@TODO implement Permission
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
         it should contain the drink.long() data representation
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route("/drinks-detail")
+def drinksDetails():
+    error = False
+    try:
+        drinks = [drink.long() for drink in db.session.query(Drink).all()]
+    except Exception as e:
+        error = True
+    finally:
+        db.session.close()
+
+    if error:
+        abort(500)
+    else:
+        return jsonify({
+            "success": True,
+            "drinks": drinks
+        }), 200
+
 
 '''
 @TODO implement endpoint
@@ -86,12 +106,10 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 
-## Error Handling
-'''
-Example error handling for unprocessable entity
-'''
 
-
+# --------------------------------------------------------------------------------------------------------------------
+# Error Handling
+# --------------------------------------------------------------------------------------------------------------------
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
