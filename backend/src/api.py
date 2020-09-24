@@ -2,6 +2,7 @@ from flask import Flask, jsonify, abort
 from flask_cors import CORS
 
 from models import setup_db, db, Drink
+from .auth.auth import AuthError
 
 app = Flask(__name__)
 setup_db(app)
@@ -128,7 +129,7 @@ def badRequest(error):
 
 
 @app.errorhandler(401)
-def unauthenticated (error):
+def unauthenticated(error):
     return jsonify({
         "success": False,
         "error": 401,
@@ -145,7 +146,9 @@ def forbidden(error):
     }), 403
 
 
-'''
-@TODO implement error handler for AuthError
-    error handler should conform to general task above 
-'''
+# Auth0 Authentication error handler
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
