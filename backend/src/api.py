@@ -23,12 +23,14 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+
 @app.route("/drinks")
 def get_drinks():
     error = False
     try:
         drinks = [drink.short() for drink in db.session.query(Drink).all()]
-    except:
+    except Exception as e:
         error = True
     finally:
         db.session.close()
@@ -50,7 +52,6 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 
-
 '''
 @TODO implement endpoint
     POST /drinks
@@ -60,7 +61,6 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
 
 '''
 @TODO implement endpoint
@@ -74,7 +74,6 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 
-
 '''
 @TODO implement endpoint
     DELETE /drinks/<id>
@@ -86,34 +85,64 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 
-
 ## Error Handling
 '''
 Example error handling for unprocessable entity
 '''
+
+
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False,
-                    "error": 422,
-                    "message": "unprocessable"
-                    }), 422
+        "success": False,
+        "error": 422,
+        "message": "Unprocessable"
+    }), 422
 
-'''
-@TODO implement error handlers using the @app.errorhandler(error) decorator
-    each error handler should return (with approprate messages):
-             jsonify({
-                    "success": False, 
-                    "error": 404,
-                    "message": "resource not found"
-                    }), 404
 
-'''
+@app.errorhandler(404)
+def notFound(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "Resource is Not Found."
+    }), 404
 
-'''
-@TODO implement error handler for 404
-    error handler should conform to general task above 
-'''
+
+@app.errorhandler(500)
+def serverError(error):
+    return jsonify({
+        "success": False,
+        "error": 500,
+        "message": "Server Error."
+    }), 500
+
+
+@app.errorhandler(400)
+def badRequest(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "Bad Request."
+    }), 400
+
+
+@app.errorhandler(401)
+def unauthenticated (error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "Unauthenticated "
+    }), 401
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return jsonify({
+        "success": False,
+        "error": 403,
+        "message": "Forbidden, Not Authorized."
+    }), 403
 
 
 '''
