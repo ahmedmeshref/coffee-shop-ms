@@ -1,11 +1,10 @@
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, current_app
 from flask_cors import CORS
 
-from models import setup_db, db, Drink
+from .models import db, Drink
 from .auth.auth import AuthError
 
-app = Flask(__name__)
-setup_db(app)
+app = current_app
 CORS(app)
 
 '''

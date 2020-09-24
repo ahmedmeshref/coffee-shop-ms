@@ -11,6 +11,7 @@ def create_app(config_object='development'):
 
     with app.app_context():
         setup_db(app)
-        # import blueprints
+        # import routes
+        import src.api
 
         return app
