@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, abort, current_app, request
 from flask_cors import CORS
+import json
 
-from .models import db, Drink
-from .auth.auth import AuthError
+from src.models import db, Drink
+from src.auth.auth import AuthError
 
 app = current_app
 CORS(app)
@@ -91,11 +92,16 @@ def create_drink():
 
     error = False
     try:
-        drink = Drink(title=new_drink["title"], recipe=new_drink["recipe"])
+        recipe = new_drink["recipe"]
+        if isinstance(recipe, dict):
+            recipe = [recipe]
+        drink = Drink()
+        drink.title = new_drink["title"]
+        drink.recipe = json.dumps(recipe)
         drink.insert()
-        drink.long()
+        drink = [drink.long()]
     except Exception as e:
-        error = False
+        error = True
         db.session.rollback()
     finally:
         db.session.close()
@@ -106,6 +112,7 @@ def create_drink():
         "success": True,
         "drinks": drink
     }), 200
+
 
 '''
 @TODO implement endpoint

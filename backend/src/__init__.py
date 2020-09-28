@@ -12,6 +12,5 @@ def create_app(config_object='development'):
     with app.app_context():
         setup_db(app)
         # import routes
-        import src.api
-
+        from .routes import api
         return app

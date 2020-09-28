@@ -15,12 +15,10 @@ def setup_db(app):
     db.init_app(app)
     db.create_all()
 
-
 class Drink(db.Model):
     """
     Drink blueprint is a persistent drink entity, extends the base SQLAlchemy Model
     """
-    __tablename__ = 'drinks'
     # Unique primary key
     id = Column(db.Integer, primary_key=True)
     # String Title
