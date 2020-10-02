@@ -87,19 +87,25 @@ def drinksDetails():
 @app.route("/drinks", methods=["POST"])
 def create_drink():
     new_drink = request.get_json()
-    if not new_drink:
+    recipe = new_drink.get("recipe")
+    title = new_drink.get("title")
+    if not (recipe and title):
         abort(400)
-
     error = False
+    unique = True
+
     try:
-        recipe = new_drink["recipe"]
-        if isinstance(recipe, dict):
-            recipe = [recipe]
-        drink = Drink()
-        drink.title = new_drink["title"].title()
-        drink.recipe = json.dumps(recipe)
-        drink.insert()
-        formatted_drink = drink.long()
+        # format given title
+        title = title.title()
+        unique = is_unique(title)
+        if unique:
+            if isinstance(recipe, dict):
+                recipe = [recipe]
+            drink = Drink()
+            drink.title = title
+            drink.recipe = json.dumps(recipe)
+            drink.insert()
+            formatted_drink = drink.long()
     except Exception as e:
         error = True
         db.session.rollback()
@@ -146,7 +152,7 @@ def update_drink(id):
             # format the new title
             new_title = new_title.title()
             # verify that a new title is unique
-            unique = not db.session.query(Drink).filter(Drink.title == new_title).first()
+            unique = is_unique(new_title)
             if unique:
                 drink.title = new_title
         if unique:
@@ -185,7 +191,7 @@ def update_drink(id):
 '''
 
 
-@app.route("/drinks/<int:id>")
+@app.route("/drinks/<int:id>", methods=["DELETE"])
 def delete_drink(id):
     drink = db.session.query(Drink).get_or_404(id)
     error = False
@@ -204,7 +210,6 @@ def delete_drink(id):
         "success": True,
         "delete": id
     })
-
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -270,3 +275,14 @@ def handle_auth_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
     return response
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# Utils
+# --------------------------------------------------------------------------------------------------------------------
+def is_unique(title: str) -> bool:
+    """
+    check whether a given title is unique or has been used before
+    :return: True if title is unique, False otherwise
+    """
+    return not db.session.query(Drink).filter(Drink.title == title).first()
