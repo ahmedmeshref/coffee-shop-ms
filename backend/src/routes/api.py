@@ -185,6 +185,28 @@ def update_drink(id):
 '''
 
 
+@app.route("/drinks/<int:id>")
+def delete_drink(id):
+    drink = db.session.query(Drink).get_or_404(id)
+    error = False
+
+    try:
+        drink.delete()
+    except Exception as e:
+        db.session.rollback()
+        error = True
+    finally:
+        db.session.close()
+
+    if error:
+        abort(500)
+    return jsonify({
+        "success": True,
+        "delete": id
+    })
+
+
+
 # --------------------------------------------------------------------------------------------------------------------
 # Error Handling
 # --------------------------------------------------------------------------------------------------------------------
