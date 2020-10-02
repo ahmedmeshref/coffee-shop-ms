@@ -96,10 +96,10 @@ def create_drink():
         if isinstance(recipe, dict):
             recipe = [recipe]
         drink = Drink()
-        drink.title = new_drink["title"]
+        drink.title = new_drink["title"].title()
         drink.recipe = json.dumps(recipe)
         drink.insert()
-        drink = [drink.long()]
+        formatted_drink = drink.long()
     except Exception as e:
         error = True
         db.session.rollback()
@@ -110,7 +110,7 @@ def create_drink():
         abort(500)
     return jsonify({
         "success": True,
-        "drinks": drink
+        "drinks": [formatted_drink]
     }), 200
 
 
@@ -125,6 +125,53 @@ def create_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route("/drinks/<int:id>", methods=["PATCH"])
+def update_drink(id):
+    # get the drink to update if id exist, otherwise abort not found error
+    drink = db.session.query(Drink).get_or_404(id)
+    req_body = request.get_json()
+    # if no data to update, abort bad request error
+    if not req_body:
+        abort(400)
+    error = False
+    # unique refers to the uniqueness of the new given title
+    unique = True
+
+    try:
+        new_title = req_body.get("title")
+        new_recipe = req_body.get("recipe")
+        if new_title:
+            # format the new title
+            new_title = new_title.title()
+            # verify that a new title is unique
+            unique = not db.session.query(Drink).filter(Drink.title == new_title).first()
+            if unique:
+                drink.title = new_title
+        if unique:
+            if new_recipe:
+                drink.recipe = json.dumps(new_recipe)
+            drink.update()
+            formatted_drink = drink.long()
+    except:
+        db.session.rollback()
+        error = True
+    finally:
+        db.session.close()
+
+    if error:
+        abort(500)
+    elif not unique:
+        abort(400)
+    return jsonify({
+        "success": True,
+        "drink": [formatted_drink]
+    }), 200
+
+
+
+
 
 '''
 @TODO implement endpoint
