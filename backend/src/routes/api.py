@@ -114,6 +114,8 @@ def create_drink():
 
     if error:
         abort(500)
+    elif not unique:
+        abort(400)
     return jsonify({
         "success": True,
         "drinks": [formatted_drink]
