@@ -4,6 +4,7 @@ import json
 
 from src.models import db, Drink
 from src.auth.auth import AuthError
+from src.auth.auth import require_auth
 
 app = current_app
 CORS(app)
@@ -55,6 +56,7 @@ def get_drinks():
 
 
 @app.route("/drinks-detail")
+@require_auth("get:drinks-detail")
 def drinksDetails():
     error = False
     try:
@@ -85,6 +87,7 @@ def drinksDetails():
 
 
 @app.route("/drinks", methods=["POST"])
+@require_auth("post:drinks")
 def create_drink():
     new_drink = request.get_json()
     recipe = new_drink.get("recipe")
@@ -136,6 +139,7 @@ def create_drink():
 
 
 @app.route("/drinks/<int:id>", methods=["PATCH"])
+@require_auth("patch:drinks")
 def update_drink(id):
     # get the drink to update if id exist, otherwise abort not found error
     drink = db.session.query(Drink).get_or_404(id)
@@ -194,6 +198,7 @@ def update_drink(id):
 
 
 @app.route("/drinks/<int:id>", methods=["DELETE"])
+@require_auth("delete:drinks")
 def delete_drink(id):
     drink = db.session.query(Drink).get_or_404(id)
     error = False
