@@ -72,6 +72,7 @@ def create_drink(payload):
     new_drink = request.get_json()
     recipe = new_drink.get('recipe', None)
     title = new_drink.get("title", None)
+    # if request doesn't contain recipe or a title, return 400: bad request error.
     if not (recipe and title):
         abort(400)
 
