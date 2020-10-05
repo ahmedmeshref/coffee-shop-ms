@@ -49,25 +49,27 @@ def drinksDetails(payload):
         required: true
         description: The login payload
     responses:
-      200:
-        description: A list of colors (may be filtered by palette)
-        example:
+        200:
+            description: A list of all drinks in DB.
+            example:
             {
-            "success": True,
-            "drinks": [{
-              "id": 2,
-              "recipe": [
-                {
-                  "color": "red",
-                  "name": "cocacola"
-                  "parts": 2
-                }
-              ],
-              "title": "Coca"
-            }]
-           }
-      500:
-        description: A server error occurred
+                "success": True,
+                "drinks": [{
+                  "id": 2,
+                  "recipe": [
+                    {
+                      "color": "red",
+                      "name": "cocacola"
+                      "parts": 2
+                    }
+                  ],
+                  "title": "Coca"
+                }]
+            }
+        401:
+            description: User was not authenticated (logged in).
+        500:
+            description: A server error occurred
     """
     error = False
     try:
@@ -89,10 +91,47 @@ def drinksDetails(payload):
 @app.route("/drinks", methods=["POST"])
 @require_auth("post:drinks")
 def create_drink(payload):
-    """
-    Create a new row in the drinks table. It  returns a 400 error in case title or recipe is not included in
-        the request body.
-    :return: json
+    """Create a new drink. Accessible for managers only.
+    ---
+    parameters:
+      - name: payload
+        in: path
+        type: string
+        required: true
+        description: The login payload
+    Request:
+        - JSON object that includes Title and recipe details.
+        example:
+        {
+            "title": "banana",
+            "recipe": [{"color": "yellow", "name": "ba", "parts":10}]
+        }
+    responses:
+        200:
+            description: A list contains the newly added drink.
+            example:
+                {
+                "success": True,
+                "drinks": [{
+                  "id": 10,
+                  "recipe": [
+                    {
+                      "color": "yellow",
+                      "name": "ba"
+                      "parts": 10
+                    }
+                  ],
+                  "title": "Banana"
+                }]
+               }
+        401:
+            description: User was not authenticated (logged in).
+        403:
+            description: User was not authorized to create a new drink.
+        500:
+            description: A server error occurred
+        400:
+            description: Bad request was sent, either title, recipe, or both were missing from the request body.
     """
     new_drink = request.get_json()
     recipe = new_drink.get('recipe', None)
@@ -129,11 +168,51 @@ def create_drink(payload):
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @require_auth("patch:drinks")
 def update_drink(payload, id):
-    """
-    Update drink corresponds to a given id. A 404 error if <id> is not found
-    :param payload: str
-    :param id: int
-    :return: json
+    """Update the data of an existing drink. Accessible for managers only!
+    ---
+    parameters:
+      - name: payload
+        in: path
+        type: string
+        required: true
+        description: The login payload
+      - name: id
+        in: path
+        type: int
+        required: true
+        description: The id of the target drink to update
+    request:
+        - JSON object that includes Title and/or recipe details.
+        example:
+        {
+            "recipe": [{"color": "brown", "name": "KZ", "parts":8}]
+        }
+    responses:
+        200:
+            description: A list contains the update drink.
+            example:
+                {
+                "success": True,
+                "drinks": [{
+                  "id": 10,
+                  "recipe": [
+                    {
+                      "color": "brown",
+                      "name": "KZ"
+                      "parts": 8
+                    }
+                  ],
+                  "title": "Banana"
+                }]
+               }
+        401:
+            description: User was not authenticated (logged in).
+        403:
+            description: User was not authorized to create a new drink.
+        500:
+            description: A server error occurred
+        400:
+            description: Bad/empty request was sent, or giving id doesn't match any existing drink.
     """
     # get the drink to update if id exist, otherwise abort not found error
     drink = db.session.query(Drink).get_or_404(id)
@@ -170,11 +249,35 @@ def update_drink(payload, id):
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @require_auth("delete:drinks")
 def delete_drink(payload, id):
-    """
-    Delete a drink that corresponds to a given <id>
-    :param payload: str
-    :param id: int
-    :return: json
+    """Delete an existing drink giving its id. Accessible for managers only!
+    ---
+    parameters:
+      - name: payload
+        in: path
+        type: string
+        required: true
+        description: The login payload
+      - name: id
+        in: path
+        type: int
+        required: true
+        description: The id of the target drink to delete
+    responses:
+        200:
+            description: A list contains the update drink.
+            example:
+                {
+                "success": True,
+                "id": 10
+               }
+        401:
+            description: User was not authenticated (logged in).
+        403:
+            description: User was not authorized to create a new drink.
+        500:
+            description: A server error occurred
+        400:
+            description: Bad request was sent (id doesn't match any existing drink).
     """
     drink = db.session.query(Drink).get_or_404(id)
     error = False
