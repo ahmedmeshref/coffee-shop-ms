@@ -1,4 +1,4 @@
-# Coffee Shop Backend
+# Coffee Shop Backend API
 
 ## Getting Started
 
@@ -10,7 +10,7 @@ Follow instructions to install the latest version of python for your platform in
 
 #### Virtual Enviornment
 
-We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+It is recommended to work within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
 #### PIP Dependencies
 
@@ -30,27 +30,42 @@ This will install all of the required packages we selected within the `requireme
 
 - [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
 
+##### Edit Configurations
+
+###### Database Setup
+
+For this app, you will need to setup a postgresql db. Open your terminal and run:
+
+1- `sudo -i -u <postgres username>`
+2- `createdb coffee_shop`
+
+Navigate to `/backend/config.py` and change the following:
+```
+SECRET_KEY = "Enter random key for the app's Config, DevelopmentConfig, TestingConfig classes"
+SQLALCHEMY_DATABASE_URI = "dialect+driver://username:password@host:port/database". For more information about setting the URI, visit Flask Configuration.
+```
+
 ## Running the server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
-
-Each time you open a new terminal session, run:
-
-```bash
-export FLASK_APP=api.py;
-```
+From within your `./backend` directory first ensure you are working using your created virtual environment.
 
 To run the server, execute:
 
-```bash
-flask run --reload
-```
+`
+python wsgi.py  
+# OR 
+python3 wsgi.py
+`
 
-The `--reload` flag will detect file changes and restart the server automatically.
+From your browser, navigate to http://127.0.0.1:5000/.
+
+> Note: Running the server will createdb tables automatically.
 
 ## Tasks
 
-### Setup Auth0
+### Setup & Test Auth0 
+
+To use Auth0: 
 
 1. Create a new Auth0 Account
 2. Select a unique tenant domain
@@ -76,10 +91,3 @@ The `--reload` flag will detect file changes and restart the server automaticall
     - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
     - Run the collection and correct any errors.
     - Export the collection overwriting the one we've included so that we have your proper JWTs during review!
-
-### Implement The Server
-
-There are `@TODO` comments throughout the `./backend/src`. We recommend tackling the files in order and from top to bottom:
-
-1. `./src/auth/auth.py`
-2. `./src/api.py`
