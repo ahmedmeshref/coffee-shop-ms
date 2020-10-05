@@ -5,8 +5,6 @@ from jose import jwt
 from flask import request, abort
 from functools import wraps
 
-auth0_login_url = "https://dev-v-o4h90d.us.auth0.com/authorize?audience=coffee_shop&response_type=token&client_id=cETp6VA6cSk20WmiaMC9RxCZ4vatAxsB&redirect_uri=http://localhost:4200"
-
 AUTH0_DOMAIN = 'dev-v-o4h90d.us.auth0.com'
 API_AUDIENCE = "coffee_shop"
 ALGORITHMS = ["RS256"]
