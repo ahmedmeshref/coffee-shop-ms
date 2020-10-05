@@ -41,8 +41,7 @@ For this app, you will need to setup a postgresql db. Open your terminal and run
 
 Navigate to `/backend/config.py` and change the following on the Config class:
 
-- SECRET_KEY = "Enter random key for the app's Config, DevelopmentConfig, TestingConfig classes"
-- SQLALCHEMY_DATABASE_URI = "dialect+driver://username:password@host:port/database". For more information about setting the URI, visit Flask Configuration.
+- SQLALCHEMY_DATABASE_URI = "dialect+driver://username:password@host:port/database_name". For more information about setting the URI, visit Flask Configuration.
 
 
 ## Running the server

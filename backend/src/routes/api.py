@@ -19,15 +19,15 @@ CORS(app)
 def get_drinks():
     """
     Public endpoint that returns the representation of drinks data drink.short().
-    :return: json.
+    :return: json
     """
     error = False
-    try:
-        drinks = [drink.short() for drink in db.session.query(Drink).all()]
-    except Exception as e:
-        error = True
-    finally:
-        db.session.close()
+    # try:
+    drinks = [drink.short() for drink in db.session.query(Drink).all()]
+    # except Exception as e:
+    #     error = True
+    # finally:
+    #     db.session.close()
     if error:
         abort(500)
     else:
@@ -40,9 +40,34 @@ def get_drinks():
 @app.route("/drinks-detail")
 @require_auth("get:drinks-detail")
 def drinksDetails(payload):
-    """
-    Contain the drink.long() data representation of all drinks in db.
-    :return: json
+    """Get a list of long representation for all drinks in DB.
+    ---
+    parameters:
+      - name: payload
+        in: path
+        type: string
+        required: true
+        description: The login payload
+    responses:
+      200:
+        description: A list of colors (may be filtered by palette)
+        example:
+            {
+            "success": True,
+            "drinks": [{
+              "id": 2,
+              "recipe": [
+                {
+                  "color": "red",
+                  "name": "cocacola"
+                  "parts": 2
+                }
+              ],
+              "title": "Coca"
+            }]
+           }
+      500:
+        description: A server error occurred
     """
     error = False
     try:
@@ -233,4 +258,3 @@ def handle_auth_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
     return response
-
