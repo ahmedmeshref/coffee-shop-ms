@@ -85,39 +85,31 @@ def drinksDetails(jwt):
     newly created drink pr appropriate status code indicating reason for failure
 '''
 
-
 @app.route("/drinks", methods=["POST"])
 @require_auth("post:drinks")
-def create_drink(jwt):
+def create_drink(payload):
     new_drink = request.get_json()
-    recipe = new_drink.get("recipe")
-    title = new_drink.get("title")
-    if not (recipe and title):
-        abort(400)
     error = False
-    unique = True
 
     try:
         # format given title
-        title = title.title()
-        unique = is_unique(title)
-        if unique:
-            if isinstance(recipe, dict):
-                recipe = [recipe]
-            drink = Drink()
-            drink.title = title
-            drink.recipe = json.dumps(recipe)
-            drink.insert()
-            formatted_drink = drink.long()
-    except Exception as e:
+        recipe = new_drink['recipe']
+        if isinstance(recipe, dict):
+            req_recipe = [recipe]
+
+        title = new_drink["title"].title()
+        drink = Drink()
+        drink.title = title
+        drink.recipe = json.dumps(recipe)
+        drink.insert()
+        formatted_drink = drink.long()
+    except BaseException:
         error = True
         db.session.rollback()
     finally:
         db.session.close()
 
     if error:
-        abort(500)
-    elif not unique:
         abort(400)
     return jsonify({
         "success": True,
@@ -148,8 +140,6 @@ def update_drink(jwt, id):
     if not req_body:
         abort(400)
     error = False
-    # unique refers to the uniqueness of the new given title
-    unique = True
 
     try:
         new_title = req_body.get("title")
@@ -157,24 +147,18 @@ def update_drink(jwt, id):
         if new_title:
             # format the new title
             new_title = new_title.title()
-            # verify that a new title is unique
-            unique = is_unique(new_title)
-            if unique:
-                drink.title = new_title
-        if unique:
-            if new_recipe:
-                drink.recipe = json.dumps(new_recipe)
-            drink.update()
-            formatted_drink = drink.long()
-    except:
+            drink.title = new_title
+        if new_recipe:
+            drink.recipe = json.dumps(new_recipe)
+        drink.update()
+        formatted_drink = drink.long()
+    except BaseException:
         db.session.rollback()
         error = True
     finally:
         db.session.close()
 
     if error:
-        abort(500)
-    elif not unique:
         abort(400)
     return jsonify({
         "success": True,
