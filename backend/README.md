@@ -8,7 +8,7 @@
 
 Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-#### Virtual Enviornment
+#### Virtual Environment
 
 It is recommended to work within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
@@ -30,20 +30,20 @@ This will install all of the required packages we selected within the `requireme
 
 - [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
 
-##### Edit Configurations
+#### Edit Configurations
 
-###### Database Setup
+##### Database Setup
 
 For this app, you will need to setup a postgresql db. Open your terminal and run:
 
-1- `sudo -i -u <postgres username>`
-2- `createdb coffee_shop`
+- `sudo -i -u <postgres username>` 
+- `createdb coffee_shop`
 
-Navigate to `/backend/config.py` and change the following:
-```
-SECRET_KEY = "Enter random key for the app's Config, DevelopmentConfig, TestingConfig classes"
-SQLALCHEMY_DATABASE_URI = "dialect+driver://username:password@host:port/database". For more information about setting the URI, visit Flask Configuration.
-```
+Navigate to `/backend/config.py` and change the following on the Config class:
+
+- SECRET_KEY = "Enter random key for the app's Config, DevelopmentConfig, TestingConfig classes"
+- SQLALCHEMY_DATABASE_URI = "dialect+driver://username:password@host:port/database". For more information about setting the URI, visit Flask Configuration.
+
 
 ## Running the server
 
@@ -51,9 +51,7 @@ From within your `./backend` directory first ensure you are working using your c
 
 To run the server, execute:
 
-`python wsgi.py  
-# OR 
-python3 wsgi.py`
+`python wsgi.py`  
 
 From your browser, navigate to http://127.0.0.1:5000/.
 
