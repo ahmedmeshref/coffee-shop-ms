@@ -57,7 +57,7 @@ def get_drinks():
 
 @app.route("/drinks-detail")
 @require_auth("get:drinks-detail")
-def drinksDetails():
+def drinksDetails(jwt):
     error = False
     try:
         drinks = [drink.long() for drink in db.session.query(Drink).all()]
@@ -88,7 +88,7 @@ def drinksDetails():
 
 @app.route("/drinks", methods=["POST"])
 @require_auth("post:drinks")
-def create_drink():
+def create_drink(jwt):
     new_drink = request.get_json()
     recipe = new_drink.get("recipe")
     title = new_drink.get("title")
@@ -140,7 +140,7 @@ def create_drink():
 
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @require_auth("patch:drinks")
-def update_drink(id):
+def update_drink(jwt, id):
     # get the drink to update if id exist, otherwise abort not found error
     drink = db.session.query(Drink).get_or_404(id)
     req_body = request.get_json()
@@ -199,7 +199,7 @@ def update_drink(id):
 
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @require_auth("delete:drinks")
-def delete_drink(id):
+def delete_drink(jwt, id):
     drink = db.session.query(Drink).get_or_404(id)
     error = False
 
