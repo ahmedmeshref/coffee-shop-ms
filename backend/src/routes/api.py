@@ -17,9 +17,29 @@ CORS(app)
 
 @app.route("/drinks")
 def get_drinks():
-    """
-    Public endpoint that returns the representation of drinks data drink.short().
-    :return: json
+    """Get a list of short representation for all drinks in DB.
+    ---
+    permission:
+        Accessible for all users.
+    responses:
+        200:
+            description: A list of all drinks in DB.
+            example:
+            {
+                "success": True,
+                "drinks": [{
+                  "id": 2,
+                  "recipe": [
+                    {
+                      "color": "red",
+                      "parts": 2
+                    }
+                  ],
+                  "title": "Coca"
+                }]
+            }
+        500:
+            description: A server error occurred
     """
     error = False
     # try:
@@ -48,6 +68,8 @@ def drinksDetails(payload):
         type: string
         required: true
         description: The login payload
+    permission:
+        Accessible for managers and barista.
     responses:
         200:
             description: A list of all drinks in DB.
@@ -91,7 +113,7 @@ def drinksDetails(payload):
 @app.route("/drinks", methods=["POST"])
 @require_auth("post:drinks")
 def create_drink(payload):
-    """Create a new drink. Accessible for managers only.
+    """Create a new drink.
     ---
     parameters:
       - name: payload
@@ -99,6 +121,8 @@ def create_drink(payload):
         type: string
         required: true
         description: The login payload
+    permission:
+        Accessible for managers only.
     Request:
         - JSON object that includes Title and recipe details.
         example:
@@ -168,7 +192,7 @@ def create_drink(payload):
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @require_auth("patch:drinks")
 def update_drink(payload, id):
-    """Update the data of an existing drink. Accessible for managers only!
+    """Update the data of an existing drink.
     ---
     parameters:
       - name: payload
@@ -181,6 +205,8 @@ def update_drink(payload, id):
         type: int
         required: true
         description: The id of the target drink to update
+    permission:
+        Accessible for managers only.
     request:
         - JSON object that includes Title and/or recipe details.
         example:
@@ -249,7 +275,7 @@ def update_drink(payload, id):
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @require_auth("delete:drinks")
 def delete_drink(payload, id):
-    """Delete an existing drink giving its id. Accessible for managers only!
+    """Delete an existing drink giving its id.
     ---
     parameters:
       - name: payload
@@ -262,6 +288,8 @@ def delete_drink(payload, id):
         type: int
         required: true
         description: The id of the target drink to delete
+    permission:
+        Accessible for managers only.
     responses:
         200:
             description: A list contains the update drink.
