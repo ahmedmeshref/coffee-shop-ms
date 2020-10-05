@@ -9,14 +9,14 @@ The application does:
 3) Allow the shop baristas to see the recipe information.
 4) Allow the shop managers to create new drinks and edit existing drinks.
 
-## Application stack and setup
+## Application setup
 
+Clone repostory locally:
+  `git clone "https://github.com/ahmedmeshref/coffee-shop-ms.git"`
 Please head to readme files of both frontend and backend to get more info:
 
 1. [`./backend/`](./backend/README.md)
 2. [`./frontend/`](./frontend/README.md)
-
-
 
 ### Backend
 
