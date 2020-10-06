@@ -18,7 +18,13 @@ class AuthError(Exception):
 
 
 def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
+    """Obtains the Access JWT Token from the Authorization Header.
+    ---
+    responses:
+        200:
+            description: String that represents the authentication JWT token.
+        401:
+            description: Authentication error.
     """
     auth = request.headers.get('Authorization', None)
     if not auth:
@@ -51,6 +57,20 @@ def get_token_auth_header():
 
 
 def verify_decode_jwt(token):
+    """Decode and verify a given JWT token.
+    ---
+    parameters:
+      - name: token
+        in: path
+        type: string
+        required: true
+        description: The login JWT token
+    responses:
+        200:
+            description: payload.
+        401:
+            description: Authentication error due to invalid/expired token.
+    """
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
@@ -105,6 +125,27 @@ def verify_decode_jwt(token):
 
 
 def check_permission(payload, permission):
+    """Verify whether the user permission meets the required permission.
+    ---
+    parameters:
+      - name: payload
+        in: path
+        type: string
+        required: true
+        description: decoded payload contains the authentication request information.
+      - name: permission
+        in: path
+        type: string
+        required: true
+        description: permission required to authorize a user.
+    responses:
+        200:
+            description: The user is authorized.
+        300:
+            description: permission is missing from the payload.
+        403:
+            description: The user permission doesn't match the required one hence, user is not authorized.
+    """
     if 'permissions' not in payload:
         abort(400)
     if permission not in payload["permissions"]:
@@ -117,14 +158,15 @@ def require_auth(permission=''):
     def require_auth_decor(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            # authenticating user
+            # extract jwt token from auth header
             token = get_token_auth_header()
             try:
+                # decode and verify the token
                 payload = verify_decode_jwt(token)
             except:
                 abort(401)
 
-            # authorizing user
+            # validate the user authorization (user permission should match required permission by the endpoint)
             check_permission(payload, permission)
             return f(payload, *args, **kwargs)
         return wrapper

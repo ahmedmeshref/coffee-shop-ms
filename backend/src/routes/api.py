@@ -14,7 +14,6 @@ CORS(app)
 # ROUTES
 # -------------------------------------------------------------------------------------------------------------------
 
-
 @app.route("/drinks")
 def get_drinks():
     """Get a list of short representation for all drinks in DB.
