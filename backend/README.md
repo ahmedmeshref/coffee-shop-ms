@@ -65,7 +65,7 @@ To Configure Auth0:
 1. Create a new Auth0 Account
 2. Select a unique tenant domain
 3. Create a new, single page web application
-4. Locally, navigate to [auth.py](./src/auth/auth.py) and update the values of AUTH0_DOMAIN, ALGORITHMS, and API_AUDIENCE
+4. Locally, navigate to [auth.py](./src/auth/auth.py) and update the values of AUTH0_DOMAIN, ALGORITHMS, and API_AUDIENCE.
 5. Create a new API
     - in API Settings:
         - Enable RBAC
