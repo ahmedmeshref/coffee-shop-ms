@@ -50,7 +50,7 @@ From within your `./backend` directory first ensure you are working using your c
 
 To run the server, execute:
 
-`python wsgi.py`  
+`python3 wsgi.py`  
 
 From your browser, navigate to http://127.0.0.1:5000/.
 

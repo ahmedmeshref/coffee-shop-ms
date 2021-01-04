@@ -5,7 +5,7 @@ class Config(object):
     SECRET_KEY = os.urandom(32)
     DEBUG = True
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('POSTGRESQL') + 'coffee_shop'
+    SQLALCHEMY_DATABASE_URI = os.environ.get("POSTGRESQL") + 'coffee_shop'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

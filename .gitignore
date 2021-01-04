@@ -3,6 +3,7 @@ venv/
 __pycache__/
 test.db
 node_modules/
+coffee_shop/
 
 # OS generated files #
 ######################
