@@ -6,9 +6,9 @@ from jose import jwt
 from flask import request, abort
 from functools import wraps
 
-AUTH0_DOMAIN = 'dev-v-o4h90d.us.auth0.com'
-ALGORITHMS = ["RS256"]
-API_AUDIENCE = 'coffee_shop'
+AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
+ALGORITHMS = os.environ['ALGORITHMS']
+API_AUDIENCE = os.environ['API_AUDIENCE']
 
 
 # /server.py
